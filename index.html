@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Watson AlchemyData News API Tutorial</title>
+      <script src="exampleForm.js"></script> 
+      <link rel="stylesheet" type="text/css" href="index.css"/>
+</head>
+<body>
+ 
+
+<div id="menu">
+<ul>
+<li><a class='nav' href='#intro'>Introduction</a></li>
+<li><a class='nav' href='#setup'>Getting Started</a></li>
+<li><a class='nav' href='#sendRequest'>Sending a Request</a></li>
+<li><a class='nav' href='#codeExample'>Code Example</a></li>
+</ul>
+</div>
+    
+<br/>    
+
+<div class='contentBlock' id='intro'>
+    <h2 class='sectionHeading'>Watson AlchemyData News API, an Introduction</h2>
+
+    <p>The Watson AlchemyData News API is part of the IBM Watson family of APIs, known for their impressive AI capabilities.  Using the Watson News API, you can query news articles and blogs like a database. <br/><br/><em>Querying a database? Why not just use Google?</em><br/><br/>The Watson News API allows you to use complex parameters to return very specific results. Whereas Google will return results based solely on a keyword, the Watson News API returns results based on factors such as quality of the sources, sentiment of the articles, articles about a particular subject-action-object relationship, and various other parameters. This guide will demonstrate how to use this API to your benefit.</p>
+
+    <span>To get the most out of this guide, it will be helpful to have working knowledge of:</span>
+    <ol>
+        <li>HTML</li>
+        <li>JavaScript</li>
+        <li>Forms</li>
+    </ol>
+    <br/>
+</div>
+
+<div class='whiteSpace'><div>
+
+ <div class='contentBlock' id='setup'>
+    <h2 class='sectionHeading'>Getting Started</h2>
+    <ol>
+        <li>The first step is to sign up for a <a class='whiteText' href='https://console.ng.bluemix.net/registration/' target='_blank'>free Bluemix account</a>. You'll need this in order to get an API key.</li><br/>
+        <li>From the <a class='whiteText' href="https://console.ng.bluemix.net/catalog/?category=watson" target="_blank">IBM Bluemix Catalog dashboard</a>, select AlchemyAPI under the "Watson" tab.</li><br/>
+        <li>Select pricing plan and click "create". The free plan offers 1,000 API events per day, which is plenty for our purposes.</li><br/>
+        <li>Go to the <a class='whiteText' href='https://console.ng.bluemix.net/dashboard/applications/' target='_blank'>Bluemix dashboard</a>, scroll all the way down, and select the service you just created.</li><br/>
+        <li>Select the "service credentials" tab, and click the blue "New Credential" button.</li><br/>
+        <li>An "Add new credential" window will pop up. Choose a name for your credential if you want, and click "Add"</li><br/>
+        <li>Your API key will be shown in JSON format. Save this key somewhere safe. Now we're ready to make an API call!</li><br/>
+    </ol>
+
+
+ </div>
+
+<div class='whiteSpace'><div>
+
+ <div class='contentBlock' id='sendRequest'>
+    <h2 class='sectionHeading'>Sending a Request</h2>
+    <ul>
+    <li>The simplest way to use the Watson News API is to use HTTP GET, which takes the form of a URL</li><br/>
+    <li>To configure the URL, start with the endpoint <span class='codeEx'>https://gateway-a.watsonplatform.net/calls/data/GetNews</span> and append the desired parameters</li><br/>
+    <li>Here is an example of an API call using an HTTP GET request<br/><span class='codeEx'>https://gateway-a.watsonplatform.net/calls/data/GetNews?outputMode=json&start=now-1d&end=now&count=5&<br/>q.enriched.url.enrichedTitle.relations.relation=|subject.entities.entity.type=Person,action.verb.text=appoint,object.entities.entity.type=Person|<br/>&return=enriched.url.url,enriched.url.title&apikey=a95fbc5acef9972bc750be31b623720c8fb3c4fa</span></li><br/>
+    </ul>
+<hr/>
+    <h4 class='subheader'>Breaking Down the Request</h4>
+    <ul>
+        <li>This URL is pretty long. Attached to the endpoint are several parameters that take the form of name-value pairs</li><br/>
+        <li>The name-value pairs used in this example are: 
+            <ul>
+                <li><span class='codeEx'>?outputMode=json</span> - This is the first parameter, so it must start with a <span class='codeEx'>?</span>. The name, <span class='codeEx'>outputMode</span>, is what format we'd like to receive the data back in. The two possible values are "xml" and "json". The default is xml, but since JSON is easier to work with, we used that in this example.</li><hr class='dotted'>
+                <li><span class='codeEx'>&start=now-1d</span> - Each additional parameter will now begin with <span class ='codeEx'>&</span>. <span class ='codeEx'>start</span></span> is from how long ago you'd like to the get the news. The value <span class ='codeEx'>now-1d</span> means we want news from no earlier than one day ago.</li><hr class='dotted'>
+                <li><span class='codeEx'>&end=now</span> - You will get back articles published between the time specified at <span class ='codeEx'>start</span> up to <span class ='codeEx'>end</span>. Here we used the value <span class ='codeEx'>now</span> so we will receive the most recent articles.</li><hr class='dotted'>
+                <li><span class='codeEx'>&count=5</span> - This is how many articles we'd like to receive.</li><hr class='dotted'>
+                <li><span class='codeEx'>&q.enriched.url.enrichedTitle.relations.relation=|subject.entities.entity.type=Person,action.verb.text=appoint,object.entities.entity.type=Person|</span> - This parameter has a lot going on, and is a name-value pair within a name-value pair. The name, <span class ='codeEx'>q.enriched.url.enrichedTitle.relations.relation=</span>, takes a relationship as a value. A relationship is in the format subject-action-object, like Tesla(subject) acquires(action) SolarCity(object). The value entered for the relationship name is itself 3 sets of name-value pairs that represent the subject, action, and object. This relationship is encapsulated within the vertical bars.</li><br/>
+                <ul>
+                    <li><span class='codeEx'>|subject.entities.entity.type=Person,</span> - This name-value pair represents the subject in the subject-action-object relationship. The value we have used is <span class='codeEx'>Person</span>. Other possible entities include Company, City, Movie, and even FinancialMarketIndex among several others.</li><br/>
+                    <li><span class='codeEx'>action.verb.text=appoint,</span> - This second name-value pair represents the action. The value we have used is <span class='codeEx'>appoint</span>.</li><br/>
+                    <li><span class='codeEx'>object.entities.entity.type=Person|</span> - This final pair represents the object. We have chosen <span class='codeEx'>Person</span> for this value.
+                    </li><br/>
+                </ul>
+                <li><span class='codeEx'>&return=enriched.url.url,enriched.url.title</span> - This is what information we want returned. Here we have two values, separated by a comma. As you can probably surmise, <span class='codeEx'>enriched.url.url</span> is the value for URL, and <span class='codeEx'>enriched.url.title</span> is the value for title.</li><hr class='dotted'>
+                <li><span class='codeEx'>&apikey=a95fbc5acef9972bc750be31b623720c8fb3c4fa</span> - This final parameter is the API key. Make sure to use your own!</li><hr class='dotted'>
+            </ul>        
+        </li>
+        <li>For a complete list of parameters, see <a class='whiteText' href="https://alchemyapi.readme.io/docs/full-list-of-supported-news-api-fields">this source</a></li><br/>
+    </ul>
+<hr/>
+<h4 id='response' class='subheader'>Breaking Down the Response</h4>
+<ul>
+    <li>Depending on your <span class='codeEx'>return</span> value, the response should look similar to this:</li><br/>
+<img src="https://s6.postimg.org/shffwicpd/response.jpg">
+<br/><br/>
+<li>The response returns 4 objects in JSON format:</li><br/>
+    <ul>
+        <li><span class='codeEx'>status</span> - Displays the status, which essentially means whether or not there was an error. The value of "OK" seen in the example shows there was no error in the API call.</li><br/>
+        <li><span class='codeEx'>usage</span> - This is just the AlchemyAPI Terms of Use.</li><br/>
+        <li><span class='codeEx'>totalTransaction</span> - Shows how many events this API call cost. The Bluemix free plan offers 1,000 events per day, so this value can help you keep track of how close you are to the limit</li><br/>
+        <li><span class='codeEx'>result</span> - Within this object is an array of objects that represent the articles returned. In the example above, the two interesting fields returned for each article object are <span class='codeEx'>title</span> and <span class='codeEx'>url</span>. </li><br/>
+    </ul>
+<li>If you look at the domain of the URLs, you can see these are not what one might consider "high quality" sources. Additionally, the third article returned is essentially the same as the second. We'll keep this in mind for the next time we make an API call...</li>
+</ul>
+    <br/>
+   
+ </div>
+
+<div class='whiteSpace'><div>
+
+ <div class='contentBlock' id='codeExample'>
+    <h2 class='sectionHeading'>Code Example with Form Implementation</h2>
+    <ul>
+    <li>Whether "news" to you means the latest Kardashian drama or the Dow Industrial Average, the Watson News API can be used to find the news that matters most to you. In this section, you'll see how to build a simple interface that allows a user to enter one or two search parameters and receive a list of 5 high quality, non-duplicate news articles likely to be relevant. Here is the code that accomplishes that task:</li>
+</ul>
+    <iframe width="100%" height="450" src="https://jsfiddle.net/goodmada/owg3npaw/7/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+    <ul>
+        <li>Since it's assumed the reader already has an understanding of HTML and JavaScript, we'll focus on the API aspect of the JavaScript code</li><hr class='dotted'>
+        <li>The functions <code class='codeEx'>document.addEventListener('DOMContentLoaded', bindButtons);</code> and <code class='codeEx'>function bindButtons(){}</code> are standard request functions. The first calls the function <code class='codeEx'>bindButtons(){}</code> once the page loads, and <code class='codeEx'>function bindButtons(){}</code> defines a function that contains instructions for making an API call once the form is submitted. We will now examine these instructions further.</li><hr class='dotted'>
+        <li>The bulk of the action in the <code class='codeEx'>bindButtons(){}</code> function takes place within the function <code class='codeEx'>document.getElementById('news_submit').addEventListener('click', function(event){}</code>. Let's examine the first half of this function.</li>
+    
+        <ul>
+        <li><pre class='codeEx'><code>document.getElementById('news_submit').addEventListener('click', function(event){
+        var req = new XMLHttpRequest();
+        if (document.getElementById('newsCategory').value != "blank" && document.getElementById('keyword').value == '')
+        {
+            var category = document.getElementById('newsCategory').value;
+            req.open('GET', 'http://gateway-a.watsonplatform.net/calls/data/GetNews?outputMode=json&start=now-1d&end=now&count=5&dedup=true&rank=high<br/>            &q.enriched.url.enrichedTitle.taxonomy.taxonomy_.label=' + category + '&return=enriched.url.url,enriched.url.title<br/>            &apikey=a95fbc5acef9972bc750be31b623720c8fb3c4fa', true);
+        }
+
+        else if (document.getElementById('keyword').value != '' && document.getElementById('newsCategory').value == "blank")
+        {
+            var keyword = document.getElementById('keyword').value;
+            req.open('GET', 'http://gateway-a.watsonplatform.net/calls/data/GetNews?outputMode=json&start=now-1d&end=now&count=5&dedup=true&rank=high<br/>            &q.enriched.url.enrichedTitle.keywords.keyword.text=' + keyword + '&return=enriched.url.url,enriched.url.title<br/>            &apikey=a95fbc5acef9972bc750be31b623720c8fb3c4fa', true);
+        }
+
+        else if (document.getElementById('keyword').value != '' && document.getElementById('newsCategory').value != "blank")
+        {
+            var category = document.getElementById('newsCategory').value;
+            var keyword = document.getElementById('keyword').value;
+            req.open('GET', 'http://gateway-a.watsonplatform.net/calls/data/GetNews?outputMode=json&start=now-1d&end=now&count=5&dedup=true&rank=high<br/>            &q.enriched.url.enrichedTitle.taxonomy.taxonomy_.label=' + category + '&q.enriched.url.enrichedTitle.keywords.keyword.text=' + keyword + <br/>           '&return=enriched.url.url,enriched.url.title&apikey=a95fbc5acef9972bc750be31b623720c8fb3c4fa', true);
+        }</pre></code></li>
+        <li>The first element, <code class='codeEx'>var req = new XMLHttpRequest();</code>, creates an instance of an object that allows us to communicate with the server via a (in this example) GET request, and stores it in the variable <code class='codeEx'>req</code> </li><hr class='dotted'>
+        <li>Next is a series of conditional statements that determine which fields of the form have been filled out, and open a GET request with the appropriate parameters. Let's take a closer look at the details.</li>
+        <ul>
+            <li><pre class='codeEx'><code>if (document.getElementById('newsCategory').value != "blank" && document.getElementById('keyword').value == '')
+        {
+            var category = document.getElementById('newsCategory').value;
+            req.open('GET', 'http://gateway-a.watsonplatform.net/calls/data/GetNews?outputMode=json&start=now-1d&end=now&count=5&dedup=true&rank=high<br/>            &q.enriched.url.enrichedTitle.taxonomy.taxonomy_.label=' + category + '&return=enriched.url.url,enriched.url.title<br/>            &apikey=a95fbc5acef9972bc750be31b623720c8fb3c4fa', true);
+        }</pre></code></li>
+        <li>This conditional statement means the user selected a news category, and did not enter a keyword, so the variable <code class='codeEx'>category</code> is assigned <code class='codeEx'>document.getElementById('newsCategory').value</code>, the category the user selected.</li><hr class='dotted'>
+        <li>Next is the <code class='codeEx'>req.open()</code> call. This function opens an HTTP connection to the server and sends a request for information.This function takes 3 parameters:</li><br/>
+        <ul>
+            <li><code class='codeEx'>'GET'</code> - This is what type of request we want to send. The possible values are 'GET' and 'POST'.</li><hr class='dotted'>
+            <li><code class='codeEx'>'http://gateway-a.watsonplatform.net/calls/data/GetNews?outputMode=json&start=now-1d&end=now&count=5&dedup=true&rank=high&q.enriched.url.enrichedTitle.taxonomy.taxonomy_.label=' + category + '&return=enriched.url.url,enriched.url.title&apikey=a95fbc5acef9972bc750be31b623720c8fb3c4fa'</code> - You'll recognize most of these parameters from the example in <a class='whiteText' href='#sendRequest'>Sending a Request</a>. We encountered two issues with the results in that example, and aim to fix them here. The additional parameters are:</li><br/>
+            <ul>
+                <li><code class='codeEx'>dedup=true</code> - In the last example, we receive duplicate responses. This name-value pair ensures that won't happen again. A value of <code class='codeEx'>true</code> means remove duplicates.</li><hr class='dotted'>
+                <li><code class='codeEx'>rank=high</code> - This solves another issue from the previous example. The quality of the sources was pretty low. <code class='codeEx'>rank</code> allows us to specify the quality of the articles returned, and here we have chosen to only get back the highest ranking ones.</li><hr class='dotted'>
+                <li><code class='codeEx'>q.enriched.url.enrichedTitle.taxonomy.taxonomy_.label=' + category</code> - <code class='codeEx'>q.enriched.url.enrichedTitle.taxonomy.taxonomy_.label=</code> takes as a value news category like politics, finance, and fashion. Here we append to it the value of the user input.</li><hr class='dotted'>
+            </ul>
+            <li><code class='codeEx'>true</code> - This is a boolean value that states whether or not we want to send the request asynchronously, which we do since it is more efficient.</li><hr class='dotted'>
+        </ul>
+        </ul>
+    </ul>
+
+    <br/><br/>
+    <li>After the conditional statements are evaluated and the <code class='codeEx'>req.open()</code> with the right parameters is called, we go to the <code class='codeEx'>req.addEventListener('load', function(){})</code> function seen in its entirety here:
+        </li>
+        <ul>
+            <li><pre class='codeEx'><code>req.addEventListener('load', function(){
+            if (!(req.status >= 200 && req.status < 400))
+                alert(req.statusText);
+            else{
+            var response = JSON.parse(req.responseText);
+            var newsArray = [];
+            newsArray = response.result.docs;
+            
+            document.getElementById('returnTitle1').textContent = newsArray[0].source.enriched.url.cleanedTitle;
+            document.getElementById('returnURL1').textContent = newsArray[0].source.enriched.url.url;
+
+            document.getElementById('returnTitle2').textContent = newsArray[1].source.enriched.url.cleanedTitle;
+            document.getElementById('returnURL2').textContent = newsArray[1].source.enriched.url.url;
+
+            document.getElementById('returnTitle3').textContent = newsArray[2].source.enriched.url.cleanedTitle;
+            document.getElementById('returnURL3').textContent = newsArray[2].source.enriched.url.url;
+
+            document.getElementById('returnTitle4').textContent = newsArray[3].source.enriched.url.cleanedTitle;
+            document.getElementById('returnURL4').textContent = newsArray[3].source.enriched.url.url;
+
+            document.getElementById('returnTitle5').textContent = newsArray[4].source.enriched.url.cleanedTitle;
+            document.getElementById('returnURL5').textContent = newsArray[4].source.enriched.url.url;
+            }
+        })</code></pre></li>
+        <li>Since we chose to submit this request asynchronously, we need this function to make sure our code runs at the right time. This function waits for our request to receive a response, then works with the received data.</li><hr class='dotted'>
+        <li>The conditional statement: <pre class='codeEx'><code>if (!(req.status >= 200 && req.status < 400))
+                alert(req.statusText);</code></pre>simply checks that our request didn't have an error. Ours doesn't, so the rest of the code executes.</li><hr class='dotted'>
+        <li><code class='codeEx'>var response = JSON.parse(req.responseText);</code> stores the parsed response in the variable <code class='codeEx'>response</code></li><hr class='dotted'>
+        <li>Next, we create an empty array that will hold the response objects that represent the returned articles - <code class='codeEx'>var newsArray = [];</code>, and assign the value <code class='codeEx'>response.result.docs</code> to that array.</li><hr class='dotted'>
+        <li>Then we assign the proper values to the HTML fields so the user sees their results on the page. Each title and URL HTML element is assigned <br/><code class='codeEx'>newsArray[ARRAY NUMBER].source.enriched.url.cleanedTitle;</code> and <code class='codeEx'>newsArray[ARRAY NUMBER].source.enriched.url.url;</code> respectively, so the HTML fields are populated with the title and URL returned data.</li><hr class='dotted'>
+        <li>How do we know how to access the data we want? If you revisit <a class='whiteText' href='#response'>Breaking Down the Response</a>, you can see the format of the objects returned. We can use knowledge of this format to find the right path to the data we want. Every time an object is tabbed over in the JSON response format, we would write it as <code class='codeEx'>.THAT_OBJECT</code>.For example, when we created our array, we set it equal to <code class='codeEx'>response.result.docs</code>. The path always starts with <code class='codeEx'>response</code>, and the next tabbed object of interest is <code class='codeEx'>result</code>, so we append that to <code class='codeEx'>response</code> to get <code class='codeEx'>response.result</code>s Then the next item of interest within the <code class='codeEx'>result</code> object is <code class='codeEx'>docs</code>, so we append that to the path to get <code class='codeEx'>response.result.docs</code>. Using this method we are able to find the article titles and URLs as well.</li><hr class='dotted'>
+        </ul>
+        <br/><br/>
+        <li>The final part of the request is: <pre class='codeEx'><code>req.send(null);
+        event.preventDefault();</code></pre> which is just standard code for sending a request.</li><br/>
+    </ul>
+<hr><br/>
+<span>Feel free to try the functionality of this news finder tool below</span><br/><br/>
+
+<div id="formExample">
+<form method='get'>
+    <fieldset>
+        <legend>News Finder</legend>
+        <fieldset>
+        <p>Enter a topic or select a category from the drop-down menu to search news
+    
+        <br /><br />
+                
+        <label>Keyword:
+            <input type="text" name="keyword" id="keyword" size="30" maxlength="100">
+        </label>
+        <br/><br/>
+        <label>News Category:
+            <select name="newsCategory" id="newsCategory">
+                <option value="blank">--Select category--</option>
+                <option value="entertainment">art and entertainment</option>
+                <option value="automotive">automotive</option>
+                <option value="business">business</option>
+                <option value="careers">careers</option>
+                <option value="education">education</option>
+                <option value="finance">finance</option>
+                <option value="politics">politics</option>
+                <option value="science">science</option>
+                <option value="sports">sports</option>
+                <option value="technology">technology</option>
+        </label>
+    </fieldset>
+        <br />
+        <input type="submit" id="news_submit" value="Submit" />
+        </fieldset>
+    </fieldset>
+</form>
+
+<br/>
+<span>Top 5 News Articles:</span>
+<ol>
+    <li><span id="returnTitle1"></span> <br/> <span id="returnURL1"></span></li><br/>
+    <li><span id="returnTitle2"></span> <br/> <span id="returnURL2"></span></li><br/>
+    <li><span id="returnTitle3"></span> <br/> <span id="returnURL3"></span></li><br/>
+    <li><span id="returnTitle4"></span> <br/> <span id="returnURL4"></span></li><br/>
+    <li><span id="returnTitle5"></span> <br/> <span id="returnURL5"></span></li><br/>
+</ol>
+</div>
+
+    <br/><br/>
+ </div>
+
+<div class='whiteSpace'><div>
+
+ <div></div>
+
+</body>
+</html>
